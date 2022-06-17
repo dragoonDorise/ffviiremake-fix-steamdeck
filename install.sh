@@ -1,21 +1,29 @@
 #!/usr/bin/bash
 
+
+zenity --info \
+ --title="EmuDeck FFVII Remake Fix" \
+ --width=450 \
+ --text="Hi! this script will fix FFVII Remake stuttering and low resolution issues." &>> /dev/null	
+
 rm -rf ~/dragoonDoriseTools/ffviiremake-fix-steamdeck
 git clone https://github.com/dragoonDorise/ffviiremake-fix-steamdeck.git ~/dragoonDoriseTools/ffviiremake-fix-steamdeck 
 
 #Check on internal
-FOLDER="${HOME}/.steam/steam/steamapps/common/FINAL%20FANTASY%20VII%20REMAKE/End/Content/Paks"
+FOLDER="${HOME}/.steam/steam/steamapps/common/FINAL FANTASY VII REMAKE/End/Content/Paks"
 if [ -d "$FOLDER" ]; then
-	echo "internal"
-	#rsync -r --ignore-existing ~/dragoonDoriseTools/ffviiremake-fix-steamdeck/Paks/ ${FOLDER}
+	echo "Internal Storage detected"
+	rsync -r --ignore-existing ~/dragoonDoriseTools/ffviiremake-fix-steamdeck/Paks/ "$FOLDER"
 fi
 
 #Check on SDCARD
-FOLDER="/run/media/mmcblk0p1/steamapps/common/FINAL%20FANTASY%20VII%20REMAKE/End/Content/Paks"
+FOLDER="/run/media/mmcblk0p1/steamapps/common/FINAL FANTASY VII REMAKE/End/Content/Paks"
 if [ -d "$FOLDER" ]; then
-	echo "SD Card"
-	#rsync -r --ignore-existing ~/dragoonDoriseTools/ffviiremake-fix-steamdeck/Paks/ ${FOLDER}
+	echo "SD Card detected"
+	rsync -r --ignore-existing ~/dragoonDoriseTools/ffviiremake-fix-steamdeck/Paks/ "$FOLDER"
 fi
+
+echo "Patch applied"
 
 rm -rf ~/dragoonDoriseTools/ffviiremake-fix-steamdeck
 
@@ -27,6 +35,8 @@ zenity --question \
 	 --cancel-label="No" 2>/dev/null
 ans2=$?
 if [ $ans2 -eq 0 ]; then
+	rm -rf ~/FFVIIFIX.desktop
 	qdbus org.kde.Shutdown /Shutdown org.kde.Shutdown.logout
 fi
+rm -rf ~/FFVIIFIX.desktop
 exit
